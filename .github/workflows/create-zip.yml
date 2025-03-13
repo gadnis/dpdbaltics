@@ -1,6 +1,8 @@
 name: Create module ZIP
 on:
   workflow_dispatch:
+env:
+  MODULE_NAME: dpdbaltics
 jobs:
   build_release:
     name: build_release
