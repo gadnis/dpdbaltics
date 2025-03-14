@@ -16,7 +16,7 @@ jobs:
         run: |
           composer install --no-dev --optimize-autoloader --classmap-authoritative
           composer dump-autoload --no-dev --optimize --classmap-authoritative
-          rm -rf .git .github tests vendor.zip
+          rm -rf .git .github tests vendor.zip .gitignore
           mkdir dpdbaltics
           rsync -Rr ./ ./dpdbaltics
           shopt -s extglob
