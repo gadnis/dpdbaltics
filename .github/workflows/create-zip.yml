@@ -1,6 +1,8 @@
 name: Create module ZIP
 on:
   workflow_dispatch:
+env:
+  MODULE_NAME: dpdbaltics
 jobs:
   build_release:
     name: build_release
@@ -14,24 +16,16 @@ jobs:
         run: |
           composer install --no-dev --optimize-autoloader --classmap-authoritative
           composer dump-autoload --no-dev --optimize --classmap-authoritative
-          rm -rf .git .github tests vendor.zip
+          rm -rf .git .github tests vendor.zip .gitignore
           mkdir dpdbaltics
           rsync -Rr ./ ./dpdbaltics
           shopt -s extglob
           rm -r !(dpdbaltics)
           find . -maxdepth 1 -type f -exec rm "{}" \;
           cd dpdbaltics && rm -rf dpdbaltics
-      - name: Update release
-        id: update_release
-        uses: tubone24/update_release@v1.0
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          upload_url: ${{ steps.update_release.outputs.upload_url }}
-          asset_path: ./dpdbaltics.zip
-          asset_name: dpdbaltics.zip
-          asset_content_type: application/zip
+          include-hidden-files: true
+          name: ${{ env.MODULE_NAME }}
+          path: ./
