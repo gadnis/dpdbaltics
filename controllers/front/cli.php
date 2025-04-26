@@ -17,20 +17,19 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
+ if (!defined('_PS_VERSION_')) {
+    exit;
+ }
+
  use Invertus\dpdBaltics\Config\Config;
  use Invertus\dpdBaltics\Provider\ZoneRangeProvider;
- use Invertus\dpdBaltics\Service\Import\API\ParcelShopImport;
- 
- if (!defined('_PS_VERSION_')) {
-     exit;
- }
- 
+ use Invertus\dpdBaltics\Service\Import\API\ParcelShopImport; 
 class DpdbalticsCliModuleFrontController extends ModuleFrontController
 {
     public $auth = false;
     public $ajax;
 
-    public function display()
+    public function init()
     {
         $this->ajax = 1;
 
