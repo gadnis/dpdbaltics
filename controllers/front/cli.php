@@ -67,14 +67,27 @@ class DpdbalticsCliModuleFrontController extends ModuleFrontController
 
             foreach ($countriesInZoneRange as $countryIso) {
                 $response = $parcelShopImport->importParcelShops($countryIso);
+            
+                $executionTime = round(microtime(true) - $startTime, 2);
+            
                 if (isset($response['success']) && !$response['success']) {
                     $errorMessage = isset($response['error']) ? $response['error'] : 'Unknown error occurred';
-                    $this->ajaxRender($errorMessage . ' (Execution time: ' . round(microtime(true) - $startTime, 2) . 's)');
+                    
+                    PrestaShopLogger::addLog('DPDBaltics: Error importing parcel shop for country: ' . $countryIso . ' - ' . $errorMessage . ' (Execution time: ' . $executionTime . 's)', 1, null, null, null, true);
+            
+                    $this->ajaxRender($errorMessage . ' (Execution time: ' . $executionTime . 's)');
                     return;
                 }
-                
+            
+                PrestaShopLogger::addLog('DPDBaltics: Successfully imported parcel shop for country: ' . $countryIso . ' (Execution time: ' . $executionTime . 's)', 1, null, null, null, true);
             }
+            
             $responseMessage = isset($response['success_message']) ? $response['success_message'] : 'Parcel shops updated successfully.';
+        }
+
+        // Ensure $responseMessage is set correctly
+        if (empty($responseMessage)) {
+            $responseMessage = 'No message returned from action.';  // Fallback message if empty
         }
 
         $executionTime = round(microtime(true) - $startTime, 2);
